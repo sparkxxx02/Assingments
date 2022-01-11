@@ -1,10 +1,10 @@
-package com.assingment.milestone1;
+package com.assignments.milestone_one;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class Demo2ApplicationTests {
+class MilestoneOneApplicationTests {
 
 	@Test
 	void contextLoads() {

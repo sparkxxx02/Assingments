@@ -1,13 +1,13 @@
-package com.assingment.milestone1.Driver;
+package com.assignments.milestone_one;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Demo2Application {
+public class MilestoneOneApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Demo2Application.class, args);
+		SpringApplication.run(MilestoneOneApplication.class, args);
 	}
 
 }
