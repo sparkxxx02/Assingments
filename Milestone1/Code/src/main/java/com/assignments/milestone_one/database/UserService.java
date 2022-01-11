@@ -15,15 +15,6 @@ public class UserService {
     @Autowired
     private UserRepository repo;
 
-    //Function for validating existing user with same username, email or mobile number
-    public String doesExist(User user){
-        boolean exists1 = repo.existsById(user.getUsername());
-        if (exists1) return "username";
-        List<User> exists2 = repo.findByEmailOrMobilenumber(user.getEmail(), user.getMobilenumber());
-        if (exists2.size() != 0) return "contact details";
-        return "none";
-    }
-
     public List<User> listAll() {
         return repo.findAll();
     }
@@ -43,9 +34,10 @@ public class UserService {
         repo.deleteById(username);
     }
 
-    public boolean checkIfPresent(String id) {
-        return repo.existsById(id);
+    public boolean checkforDuplicateEntry(User user){
+        return repo.existsById(user.getUsername()) || repo.existsById(user.getEmail());
     }
+
 
 
 }

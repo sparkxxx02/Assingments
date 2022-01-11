@@ -34,18 +34,28 @@ public class UserController {
     @PostMapping("/users")
     public String add(@RequestBody User user) {
 
-        String result = user.checkForBlankEntries();
-        service.save(user);
-        //displaying which field is left empty
+        //displaying if user makes invalid entry then simply exit with message
+        if(user.checkForInvalidEntries())
+            return "Entry invalid please enter username and email";
 
-        if (result.equalsIgnoreCase("none"))
+        //displaying if user make duplicate entry
+        if (service.checkforDuplicateEntry(user))
+            return "Duplicate Entry please enter different username/email";
+
+
+        //displaying which field is left empty
+        String result = user.checkForBlankEntries();
+        service.save(user);  //saving
+        if (result.equalsIgnoreCase(""))
             return "created";
         else
             return "This field "+result+" has been left empty. Kindly update if not required \n created";
+
     }
 
     @PutMapping("/users/{id}")
     public ResponseEntity<?> update(@RequestBody User user, @PathVariable String id) {
+
         try {
             User existProduct = service.get(id);
             service.save(user);
