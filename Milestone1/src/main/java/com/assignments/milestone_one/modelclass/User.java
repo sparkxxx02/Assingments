@@ -7,11 +7,11 @@ import javax.persistence.Id;
 
 @Entity
 public class User {
-
+    //specifying id so that it gets cleared for primary id
     @Id
     private String username;
-    private String firstname;
     private String lastname;
+    private String firstname;
 
     @Column(unique=true)
     private String mobilenumber;
@@ -82,16 +82,18 @@ public class User {
         this.address2 = address2;
     }
 
-    //Function to check which value is null
-    public String check(){
-        if (email == null) return "email";
-        if (username == null) return "username";
-        if (address1 == null) return "address";
-        if (firstname == null) return "firstname";
-        if (lastname == null) return "lastname";
+    //if any value is entered blank then assign some values
+    public String checkForBlankEntries(){
+        if (email == null) return "Email";
+        if (firstname == null) return "FirstName";
+        if (lastname == null) return "LastName";
+        if (username == null) return "UserName";
+        if (address1 == null) return "Address2";
+        if (address2 == null) return "Address2";
 
         return "none";
     }
 }
+
 
 

@@ -32,8 +32,16 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public void add(@RequestBody User user) {
+    public String add(@RequestBody User user) {
+
+        String result = user.checkForBlankEntries();
         service.save(user);
+        //displaying which field is left empty
+
+        if (result.equalsIgnoreCase("none"))
+            return "created";
+        else
+            return "This field "+result+" has been left empty. Kindly update if not required \n created";
     }
 
     @PutMapping("/users/{id}")
