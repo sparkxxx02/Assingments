@@ -29,33 +29,6 @@ public class UserControllerQueries {
         }
     }
 
-<<<<<<< HEAD:Milestone1/Code/src/main/java/com/assignments/milestone_one/database/UserController.java
-    @PostMapping("/users")
-    public String add(@RequestBody User user) {
-
-        //displaying if user makes invalid entry then simply exit with message
-        if(user.checkForInvalidEntries())
-            return "Entry invalid please enter username and email";
-
-        //displaying if user make duplicate entry
-        if (service.checkforDuplicateEntry(user))
-            return "Duplicate Entry please enter different username/email";
-
-
-        //displaying which field is left empty
-        String result = user.checkForBlankEntries();
-        service.save(user);  //saving
-        if (result.equalsIgnoreCase(""))
-            return "created";
-        else
-            return "This field "+result+" has been left empty. Kindly update if not required \n created";
-
-    }
-
-    @PutMapping("/users/{id}")
-    public ResponseEntity<?> update(@RequestBody User user, @PathVariable String id) {
-
-=======
     @PostMapping("/user")
     public void add(@RequestBody User user) {
         service.save(user);
@@ -63,7 +36,6 @@ public class UserControllerQueries {
 
     @PutMapping("/user/{userID}")
     public ResponseEntity<?> update(@RequestBody User user, @PathVariable Integer userID) {
->>>>>>> parent of 83a0008 (fixed bugs):Milestone1/src/main/java/com/assingment/milestone1/DatabaseFiles/UserControllerQueries.java
         try {
             User existUser = service.get(userID);
             service.save(user);
