@@ -40,6 +40,9 @@ public class UserController {
         if(user.checkForInvalidEntries())
             return "Entry invalid please enter username and email";
 
+        //adding correct details todo
+
+
         //displaying if user make duplicate entry
         if (service.checkforDuplicateEntry(user))
             return "Duplicate Entry please enter different username/email";
