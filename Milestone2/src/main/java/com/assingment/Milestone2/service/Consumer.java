@@ -13,4 +13,12 @@ public class Consumer {
 
 		System.out.println("Consummed message "+message);
 	}
+	@KafkaListener(topics="mytopic2", groupId="mygroup")
+	public void consumeFromTopic2(String message) {
+
+
+
+		System.out.println("Consummed message"+message);
+	}
+
 }
