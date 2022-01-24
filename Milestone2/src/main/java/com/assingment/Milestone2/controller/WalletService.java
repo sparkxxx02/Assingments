@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @Transactional
@@ -60,8 +62,30 @@ public class WalletService {
         trans_repo.save(transactionid);
     }
 
+    public boolean containsLetters(String str)
+        {
+            // Regex to check string
+            // contains only digits
+            String regex = "[0-9]+";
 
+            // Compile the ReGex
+            Pattern p = Pattern.compile(regex);
 
+            // If the string is empty
+            // return false
+            if (str == null) {
+                return false;
+            }
+
+            // Find match between str and amount
+            // and regular expression
+            // using Pattern.matcher()
+            Matcher m = p.matcher(str);
+
+            // Return if the string
+            // matched the ReGex
+            return !m.matches() ;
+        }
 
 }
 

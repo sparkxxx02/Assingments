@@ -44,23 +44,23 @@ public class KafkaController {
 	}
 
 	@PostMapping("/create_wallet")
-	public String add(@RequestBody Wallet wallet) {
+	public ResponseEntity<String> add(@RequestBody Wallet wallet) {
 
 
 
 		//displaying if user makes invalid entry then simply exit with message
-		//will be done by testcases
-
-
+		if(service.containsLetters(wallet.getMobilenumber()) ||
+				service.containsLetters(wallet.getAmount()))
+			return new ResponseEntity<String>("Enter correct details",HttpStatus.BAD_REQUEST);
 
 
 		//displaying if user make duplicate entry
 		if (service.checkforDuplicateEntry(wallet))
-			return "wallet id already present";
+			return new ResponseEntity<String>("Wallet already present",HttpStatus.MULTI_STATUS);
 		producer.publishToTopic2("User created");
 
 		service.save_wallet(wallet);
-			return "Success : "+wallet;
+		return new ResponseEntity<String>("Success with wallet number-"+wallet.getMobilenumber(),HttpStatus.ACCEPTED);
 
 	}
 
@@ -88,26 +88,33 @@ public class KafkaController {
 	}
 
 	@PostMapping("/transaction")
-	public String transfer(@RequestBody ObjectNode ndj) {
+	public ResponseEntity<String> transfer(@RequestBody ObjectNode ndj) {
 
 		String payer_phone_number = ndj.get("payer_phone_number").asText();
 		String payee_phone_number = ndj.get("payee_phone_number").asText();
 		String amount=ndj.get("amount").asText();
 
-		if(service.checkForSufficientAmount(payer_phone_number,amount))
-			return "Insufficient Funds";
+		//displaying if user makes invalid entry then simply exit with message
+		if(service.containsLetters(payer_phone_number)
+				|| service.containsLetters(payee_phone_number)
+				|| service.containsLetters(amount))
+			return new ResponseEntity<String>("Enter correct details",HttpStatus.BAD_REQUEST);
 
-		deductAmount(payer_phone_number,amount); //decing amount of payer
+		//checking funds
+		if(service.checkForSufficientAmount(payer_phone_number,amount))
+			return new ResponseEntity<String>("Insufficient Funds",HttpStatus.BAD_REQUEST);
+
+		deductAmount(payer_phone_number,amount); //deducting amount of payer
 		addAmount(payee_phone_number,amount);   //adding amount to payee
 
 		long T_ID= System.currentTimeMillis();
-		String temp="Transaction Success. \n Transaction ID:"+T_ID;
+		String temp="Transaction Success\nTransaction ID:"+T_ID;
 
 		//saving transcation
 		saveToTransaction(payer_phone_number,payee_phone_number,amount,T_ID);
 		//pushing event to Kafka
 		producer.publishToTopic(temp);
-		return temp;
+		return new ResponseEntity<String>(temp,HttpStatus.ACCEPTED);
 
 
 	}
