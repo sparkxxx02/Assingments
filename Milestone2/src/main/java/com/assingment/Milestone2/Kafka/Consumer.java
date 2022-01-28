@@ -1,4 +1,4 @@
-package com.assingment.Milestone2.service;
+package com.assingment.Milestone2.Kafka;
 
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;

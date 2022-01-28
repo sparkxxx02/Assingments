@@ -1,21 +1,23 @@
 package com.assingment.Milestone2.controller;
 
-import com.assingment.Milestone2.model.Transaction;
-import com.assingment.Milestone2.model.Wallet;
-import com.assingment.Milestone2.service.Producer;
+import com.assingment.Milestone2.dto.TransactionSummaryDataTransferObject;
+import com.assingment.Milestone2.dto.WalletDataTransferObject;
+import com.assingment.Milestone2.Kafka.Producer;
+import com.assingment.Milestone2.service.WalletService;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-public class KafkaController {
+public class Controller {
+
+	public static String timestamp;
 
 	@Autowired
 	Producer producer;
@@ -29,49 +31,50 @@ public class KafkaController {
 	//
 
 	@GetMapping("/wallet")
-	public List<Wallet> list() {
+	public List<WalletDataTransferObject> list() {
 		return service.listAll_wallet();
 	}
 
 	@GetMapping("/wallet/{id}")
-	public ResponseEntity<Wallet> get(@PathVariable String id) {
+	public ResponseEntity<WalletDataTransferObject> get(@PathVariable String id) {
 		try {
-			Wallet user = service.get_wallet(id);
-			return new ResponseEntity<Wallet>(user, HttpStatus.OK);
+			WalletDataTransferObject user = service.get_wallet(id);
+
+			return new ResponseEntity<WalletDataTransferObject>(user, HttpStatus.OK);
 		} catch (NoSuchElementException e) {
-			return new ResponseEntity<Wallet>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<WalletDataTransferObject>(HttpStatus.NOT_FOUND);
 		}
 	}
 
 	@PostMapping("/create_wallet")
-	public ResponseEntity<String> add(@RequestBody Wallet wallet) {
+	public ResponseEntity<String> add(@RequestBody WalletDataTransferObject walletDTO) {
 
 
 
 		//displaying if user makes invalid entry then simply exit with message
-		if(service.containsLetters(wallet.getMobilenumber()) ||
-				service.containsLetters(wallet.getAmount()))
+		if(service.containsLetters(walletDTO.getMobilenumber()) ||
+				service.containsLetters(walletDTO.getAmount()))
 			return new ResponseEntity<String>("Enter correct details",HttpStatus.BAD_REQUEST);
 
 
 		//displaying if user make duplicate entry
-		if (service.checkforDuplicateEntry(wallet))
+		if (service.checkforDuplicateEntry(walletDTO))
 			return new ResponseEntity<String>("Wallet already present",HttpStatus.MULTI_STATUS);
 		producer.publishToTopic2("User created");
 
-		service.save_wallet(wallet);
-		return new ResponseEntity<String>("Success with wallet number-"+wallet.getMobilenumber(),HttpStatus.ACCEPTED);
+		service.save_wallet(walletDTO);
+		return new ResponseEntity<String>("Success with wallet number-"+walletDTO.getMobilenumber(),HttpStatus.ACCEPTED);
 
 	}
 
 	@PutMapping("/wallet/{id}")
-	public ResponseEntity<?> update(@RequestBody Wallet wallet, @PathVariable String id) {
+	public ResponseEntity<?> update(@RequestBody WalletDataTransferObject walletDTO, @PathVariable String id) {
 		try {
-			Wallet existProduct = service.get_wallet(id);
-			if(id.toString().equalsIgnoreCase(wallet.getMobilenumber().toString()))
+			WalletDataTransferObject existProduct = service.get_wallet(id);
+			if(id.toString().equalsIgnoreCase(walletDTO.getMobilenumber().toString()))
 				throw new NumberFormatException();
 
-			service.save_wallet(wallet);
+			service.save_wallet(walletDTO);
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
 		catch (NoSuchElementException e) {
@@ -104,53 +107,33 @@ public class KafkaController {
 		if(service.checkForSufficientAmount(payer_phone_number,amount))
 			return new ResponseEntity<String>("Insufficient Funds",HttpStatus.BAD_REQUEST);
 
-		deductAmount(payer_phone_number,amount); //deducting amount of payer
-		addAmount(payee_phone_number,amount);   //adding amount to payee
+		service.deductAmount(payer_phone_number,amount); //deducting amount of payer
+		service.addAmount(payee_phone_number,amount);   //adding amount to payee
 
-		long T_ID= System.currentTimeMillis();
-		String temp="Transaction Success\nTransaction ID:"+T_ID;
+		long t_d=Instant.now().toEpochMilli();
+		timestamp = String.valueOf(t_d);
+		String temp="Transaction Success\nTransaction ID:"+t_d;
 
 		//saving transcation
-		saveToTransaction(payer_phone_number,payee_phone_number,amount,T_ID);
+		service.saveToTransaction(payer_phone_number,payee_phone_number,amount,t_d);
+
 		//pushing event to Kafka
 		producer.publishToTopic(temp);
+
 		return new ResponseEntity<String>(temp,HttpStatus.ACCEPTED);
 
 
 	}
 
-	private void saveToTransaction(String payer,String payee,String amount,long T_D) {
-		Transaction transaction=new Transaction();
-		transaction.setAmount(amount);
-		transaction.setPayment_from_mobilenumber(payer);
-		transaction.setPayment_to_mobilenumber(payee);
-		transaction.setTranx_id(String.valueOf(T_D));
-		transaction.setStatus("Success");
-		String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-		transaction.setDate(timestamp);
-		service.save_transaction(transaction);
 
-	}
+
 
 	@RequestMapping(value="/transaction",method = RequestMethod.GET)
-	public List<Transaction> sendTranscation(@RequestParam("mobilenumber") String mobilenumber)
+	public List<TransactionSummaryDataTransferObject> sendTransaction(@RequestParam("mobilenumber") String mobilenumber)
 	{
 
 		return service.getAll_transaction(mobilenumber);
 	}
 
-	public void deductAmount(String mobilenumber,String amount)
-	{
-		Wallet wallet= service.get_wallet(mobilenumber);
-		wallet.setAmount(String.valueOf(Integer.parseInt(wallet.getAmount()) - Integer.parseInt(amount)));
-		service.save_wallet(wallet);
-
-	}
-	public void addAmount(String mobilenumber,String amount)
-	{
-		Wallet wallet= service.get_wallet(mobilenumber);
-		wallet.setAmount(String.valueOf(Integer.parseInt(wallet.getAmount()) + Integer.parseInt(amount)));
-		service.save_wallet(wallet);
-	}
 
 }

@@ -1,12 +1,10 @@
 package com.assingment.Milestone2.model;
 
-import jdk.jfr.Enabled;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
-public class Transaction {
+public class Transaction_summary {
     @Id
     private String tranx_id;
     private String payment_from_mobilenumber;

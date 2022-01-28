@@ -1,4 +1,4 @@
-package com.assingment.Milestone2.service;
+package com.assingment.Milestone2.Kafka;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;

@@ -12,7 +12,7 @@ import java.util.List;
 public interface WalletRepository extends JpaRepository<Wallet, String> {
 
     @Query(value = "select amount from wallet where wallet.mobilenumber=:mobilenumber", nativeQuery = true)
-    public Integer getByAmount(String mobilenumber);
+    public String getByAmount(String mobilenumber);
 
     public List<Wallet> findByMobilenumber(String mobilenumber);
 
