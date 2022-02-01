@@ -3,15 +3,27 @@ package com.assingment.Milestone2.controller;
 import com.assingment.Milestone2.dto.TransactionSummaryDataTransferObject;
 import com.assingment.Milestone2.dto.WalletDataTransferObject;
 import com.assingment.Milestone2.Kafka.Producer;
+import com.assingment.Milestone2.model.JwtRequest;
+import com.assingment.Milestone2.model.JwtResponse;
 import com.assingment.Milestone2.service.WalletService;
+import com.assingment.Milestone2.utility.JWTUtility;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import netscape.javascript.JSObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.parser.Entity;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -24,9 +36,20 @@ public class Controller {
 	@Autowired
 	private WalletService service;
 
+	@Autowired
+	private JWTUtility jwtUtility;
+
+	@Autowired
+	private AuthenticationManager authenticationManager;
+
+
 	@RequestMapping(value="/post",method = RequestMethod.GET)
 	public void sendMessage(@RequestParam("mobilenumber") String msg) {
 		producer.publishToTopic(msg);
+	}
+	@GetMapping("/post1")
+	public String sendMessage1() {;
+		return "Hello";
 	}
 	//
 
@@ -47,23 +70,24 @@ public class Controller {
 	}
 
 	@PostMapping("/create_wallet")
-	public ResponseEntity<String> add(@RequestBody WalletDataTransferObject walletDTO) {
+	public ResponseEntity<Object> add(@RequestBody WalletDataTransferObject walletDTO) {
 
 
 
 		//displaying if user makes invalid entry then simply exit with message
 		if(service.containsLetters(walletDTO.getMobilenumber()) ||
 				service.containsLetters(walletDTO.getAmount()))
-			return new ResponseEntity<String>("Enter correct details",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("Enter correct details",HttpStatus.BAD_REQUEST);
 
 
 		//displaying if user make duplicate entry
 		if (service.checkforDuplicateEntry(walletDTO))
-			return new ResponseEntity<String>("Wallet already present",HttpStatus.MULTI_STATUS);
-		producer.publishToTopic2("User created");
+			return new ResponseEntity<>("Wallet already present",HttpStatus.MULTI_STATUS);
+		//producer.publishToTopic2("User created");
 
 		service.save_wallet(walletDTO);
-		return new ResponseEntity<String>("Success with wallet number-"+walletDTO.getMobilenumber(),HttpStatus.ACCEPTED);
+
+		return new ResponseEntity<>("Success \n-"+walletDTO,HttpStatus.ACCEPTED);
 
 	}
 
@@ -90,7 +114,7 @@ public class Controller {
 		service.delete(id);
 	}
 
-	@PostMapping("/transaction")
+	@PostMapping("/dotransaction")
 	public ResponseEntity<String> transfer(@RequestBody ObjectNode ndj) {
 
 		String payer_phone_number = ndj.get("payer_phone_number").asText();
@@ -111,14 +135,13 @@ public class Controller {
 		service.addAmount(payee_phone_number,amount);   //adding amount to payee
 
 		long t_d=Instant.now().toEpochMilli();
-		timestamp = String.valueOf(t_d);
 		String temp="Transaction Success\nTransaction ID:"+t_d;
 
-		//saving transcation
-		service.saveToTransaction(payer_phone_number,payee_phone_number,amount,t_d);
+		//saving transcation by transx_id
+		service.saveToTransactionSummary(payer_phone_number,payee_phone_number,amount,t_d);
 
 		//pushing event to Kafka
-		producer.publishToTopic(temp);
+		//producer.publishToTopic(temp);
 
 		return new ResponseEntity<String>(temp,HttpStatus.ACCEPTED);
 
@@ -129,10 +152,40 @@ public class Controller {
 
 
 	@RequestMapping(value="/transaction",method = RequestMethod.GET)
-	public List<TransactionSummaryDataTransferObject> sendTransaction(@RequestParam("mobilenumber") String mobilenumber)
+	public List<TransactionSummaryDataTransferObject> getTransactionSummary(@RequestParam("transactionID") String tranx_id)
 	{
 
-		return service.getAll_transaction(mobilenumber);
+		return service.get_currentTransaction(tranx_id);
+	}
+
+	@RequestMapping(value="/wallet_transaction",method = RequestMethod.GET)
+	public List<List<?>> get_transactions(@RequestParam("mobilenumber") String mobilenumber)
+	{
+
+		return service.get_All_transactions(mobilenumber);
+	}
+
+	@PostMapping("/authenticate")
+	public JwtResponse authenticate(@RequestBody JwtRequest jwtRequest) throws Exception{
+
+		try {
+			authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(
+							jwtRequest.getUsername(),
+							jwtRequest.getPassword()
+					)
+			);
+		} catch (BadCredentialsException e) {
+			throw new Exception("INVALID_CREDENTIALS", e);
+		}
+
+		final UserDetails userDetails
+				= service.loadUserByUsername(jwtRequest.getUsername());
+
+		final String token =
+				jwtUtility.generateToken(userDetails);
+
+		return  new JwtResponse(token);
 	}
 
 

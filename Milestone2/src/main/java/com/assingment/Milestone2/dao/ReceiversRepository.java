@@ -11,6 +11,6 @@ public interface ReceiversRepository extends JpaRepository<Receivers, String> {
 
 
 
-    @Query(value = "select * from senders,receivers where senders.user_phonenumber=:userPhonenumber or receivers.user_phonenumber=:userPhonenumber", nativeQuery = true)
+    @Query(value = "select * from receivers where receivers.user_phonenumber=:userPhonenumber", nativeQuery = true)
     public List<Receivers> getByUserPhonenumber(String userPhonenumber);
 }

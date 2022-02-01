@@ -10,6 +10,6 @@ public interface SendersRepository extends JpaRepository<Senders, String> {
 
 
 
-    @Query(value = "select * from senders,receivers where senders.user_phonenumber=:userPhonenumber or receivers.user_phonenumber=:userPhonenumber", nativeQuery = true)
+    @Query(value = "select * from senders where senders.user_phonenumber=:userPhonenumber", nativeQuery = true)
     public List<Senders> getByUserPhonenumber(String userPhonenumber);
 }

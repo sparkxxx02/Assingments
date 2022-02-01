@@ -21,7 +21,6 @@ public class Producer {
   }
     public void publishToTopic2(String message) {
         System.out.println("Publishing to topic2  "+topic2);
-
         this.kafkaTemp.send(topic2, message);
     }
 }

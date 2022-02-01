@@ -1,6 +1,5 @@
 package com.assingment.Milestone2.service;
 
-import com.assingment.Milestone2.controller.Controller;
 import com.assingment.Milestone2.dao.ReceiversRepository;
 import com.assingment.Milestone2.dao.SendersRepository;
 import com.assingment.Milestone2.dao.TransactionRepository;
@@ -15,6 +14,10 @@ import com.assingment.Milestone2.model.Transaction_summary;
 import com.assingment.Milestone2.model.Wallet;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -28,7 +31,8 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class WalletService {
+public class WalletService implements UserDetailsService {
+
 
     @Autowired
     private WalletRepository wallet_repo;
@@ -39,14 +43,8 @@ public class WalletService {
     @Autowired
     private ReceiversRepository receiversRepository;
 
-    @Autowired
-    private WalletDataTransferObject walletDataTransferObject;
-    @Autowired
-    private TransactionSummaryDataTransferObject transactionSummaryDataTransferObject;
-    @Autowired
-    private ReceiversDataTransferObject receiversDataTransferObject;
-    @Autowired
-    private SendersDataTransferObject sendersDataTransferObject;
+
+
     @Autowired
     private ModelMapper modelMapper;
 
@@ -82,15 +80,15 @@ public class WalletService {
                 .map(this::convertEntityToDto_wallet)
                 .collect(Collectors.toList());
     }
-    public List<TransactionSummaryDataTransferObject> getAll_transaction(String mobilenumber) {
+    public List<TransactionSummaryDataTransferObject> get_currentTransaction(String tranx_id) {
 
-        return trans_repo.getBytranxid(mobilenumber)
+        return trans_repo.getBytranxid(tranx_id)
                 .stream()
                 .map(this::convertEntityToDto_transaction)
                 .collect(Collectors.toList());
     }
 
-    public List<List<?>> getIndividual_transaction(String mobilenumber) {
+    public List<List<?>> get_All_transactions(String mobilenumber) {
         List<Senders> sendersList=  sendersRepository.getByUserPhonenumber(mobilenumber);
         List<Receivers> receiversList= receiversRepository.getByUserPhonenumber(mobilenumber);
 
@@ -153,34 +151,38 @@ public class WalletService {
             return !m.matches() ;
         }
 
-    public void SaveToSender(SendersDataTransferObject sendersDTO) {
+    public void SavingToDbSender(SendersDataTransferObject sendersDTO) {
 
         sendersRepository.save(convertDtoToEntity_senders(sendersDTO));
 
     }
-    public void SaveToReceiver(ReceiversDataTransferObject receiversDTO) {
+    public void SavingToDbReceivers(ReceiversDataTransferObject receiversDTO) {
         receiversRepository.save(convertDtoToEntity_receivers(receiversDTO));
     }
 
     public void SaveToSender(String payer, String payee, String amount,long T_D) {
         SendersDataTransferObject sendersDTO=new SendersDataTransferObject();
         sendersDTO.setAmount_sent(amount);
-        sendersDTO.setCreated_timestamp(Controller.timestamp);
-        sendersDTO.setModified_timestamp(Controller.timestamp);
+        String timestamp = String.valueOf(Instant.ofEpochMilli(T_D)
+                .atZone(ZoneId.systemDefault()).toLocalDateTime());
+        sendersDTO.setCreated_timestamp(timestamp);
+        sendersDTO.setModified_timestamp(timestamp);
         sendersDTO.setUser_phonenumber(payer);
         sendersDTO.setSent_to(payee);
         sendersDTO.setTransaction_id(String.valueOf(T_D));
-        SaveToSender(sendersDTO);
+        SavingToDbSender(sendersDTO);
     }
     public void SaveToReceiver(String payer, String payee, String amount,long T_D) {
         ReceiversDataTransferObject receiversDTO=new ReceiversDataTransferObject();
         receiversDTO.setAmount_received(amount);
-        receiversDTO.setCreated_timestamp(Controller.timestamp);
-        receiversDTO.setModified_timestamp(Controller.timestamp);
+        String timestamp = String.valueOf(Instant.ofEpochMilli(T_D)
+                .atZone(ZoneId.systemDefault()).toLocalDateTime());
+        receiversDTO.setCreated_timestamp(timestamp);
+        receiversDTO.setModified_timestamp(timestamp);
         receiversDTO.setUser_phonenumber(payee);
         receiversDTO.setReceived_from(payer);
         receiversDTO.setTransaction_id(String.valueOf(T_D));
-        SaveToReceiver(receiversDTO);
+        SavingToDbReceivers(receiversDTO);
     }
     public void deductAmount(String mobilenumber,String amount)
     {
@@ -195,7 +197,7 @@ public class WalletService {
         walletDTO.setAmount(String.valueOf(Integer.parseInt(walletDTO.getAmount()) + Integer.parseInt(amount)));
         save_wallet(walletDTO);
     }
-    public void saveToTransaction(String payer,String payee,String amount,long T_D) {
+    public void saveToTransactionSummary(String payer, String payee, String amount, long T_D) {
         TransactionSummaryDataTransferObject transactionSummaryDTO =new TransactionSummaryDataTransferObject();
         transactionSummaryDTO.setAmount(amount);
         transactionSummaryDTO.setPayment_from_mobilenumber(payer);
@@ -213,6 +215,15 @@ public class WalletService {
 
     }
 
+
+
+    @Override
+    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+
+        //Logic to get the user form the Database
+
+        return new User("admin","password",new ArrayList<>());
+    }
 }
 
 
