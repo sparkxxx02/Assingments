@@ -8,8 +8,6 @@ import com.assingment.Milestone2.model.JwtResponse;
 import com.assingment.Milestone2.service.WalletService;
 import com.assingment.Milestone2.utility.JWTUtility;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import netscape.javascript.JSObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,17 +17,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.parser.Entity;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 
 @RestController
 public class Controller {
 
-	public static String timestamp;
 
 	@Autowired
 	Producer producer;
@@ -42,31 +36,18 @@ public class Controller {
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
+	public static long t_d;
 
 	@RequestMapping(value="/post",method = RequestMethod.GET)
 	public void sendMessage(@RequestParam("mobilenumber") String msg) {
 		producer.publishToTopic(msg);
 	}
-	@GetMapping("/post1")
-	public String sendMessage1() {;
-		return "Hello";
-	}
+
 	//
 
 	@GetMapping("/wallet")
 	public List<WalletDataTransferObject> list() {
 		return service.listAll_wallet();
-	}
-
-	@GetMapping("/wallet/{id}")
-	public ResponseEntity<WalletDataTransferObject> get(@PathVariable String id) {
-		try {
-			WalletDataTransferObject user = service.get_wallet(id);
-
-			return new ResponseEntity<WalletDataTransferObject>(user, HttpStatus.OK);
-		} catch (NoSuchElementException e) {
-			return new ResponseEntity<WalletDataTransferObject>(HttpStatus.NOT_FOUND);
-		}
 	}
 
 	@PostMapping("/create_wallet")
@@ -91,28 +72,6 @@ public class Controller {
 
 	}
 
-	@PutMapping("/wallet/{id}")
-	public ResponseEntity<?> update(@RequestBody WalletDataTransferObject walletDTO, @PathVariable String id) {
-		try {
-			WalletDataTransferObject existProduct = service.get_wallet(id);
-			if(id.toString().equalsIgnoreCase(walletDTO.getMobilenumber().toString()))
-				throw new NumberFormatException();
-
-			service.save_wallet(walletDTO);
-			return new ResponseEntity<>(HttpStatus.OK);
-		}
-		catch (NoSuchElementException e) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-		catch (NumberFormatException e) {
-			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
-		}
-	}
-
-	@DeleteMapping("/wallet/{id}")
-	public void delete(@PathVariable String id) {
-		service.delete(id);
-	}
 
 	@PostMapping("/dotransaction")
 	public ResponseEntity<String> transfer(@RequestBody ObjectNode ndj) {
@@ -134,7 +93,7 @@ public class Controller {
 		service.deductAmount(payer_phone_number,amount); //deducting amount of payer
 		service.addAmount(payee_phone_number,amount);   //adding amount to payee
 
-		long t_d=Instant.now().toEpochMilli();
+		t_d=Instant.now().toEpochMilli();
 		String temp="Transaction Success\nTransaction ID:"+t_d;
 
 		//saving transcation by transx_id
@@ -148,18 +107,15 @@ public class Controller {
 
 	}
 
-
-
-
 	@RequestMapping(value="/transaction",method = RequestMethod.GET)
 	public List<TransactionSummaryDataTransferObject> getTransactionSummary(@RequestParam("transactionID") String tranx_id)
 	{
-
+		System.out.println("getting tranx_id"+tranx_id);
 		return service.get_currentTransaction(tranx_id);
 	}
 
-	@RequestMapping(value="/wallet_transaction",method = RequestMethod.GET)
-	public List<List<?>> get_transactions(@RequestParam("mobilenumber") String mobilenumber)
+	@RequestMapping(value="/all_transactions",method = RequestMethod.GET)
+	public List<List<?>> get_transactions(@RequestBody String mobilenumber)
 	{
 
 		return service.get_All_transactions(mobilenumber);
@@ -187,6 +143,41 @@ public class Controller {
 
 		return  new JwtResponse(token);
 	}
+
+
+	//basic api's
+	@PutMapping("/wallet/{id}")
+	public ResponseEntity<?> update(@RequestBody WalletDataTransferObject walletDTO, @PathVariable String id) {
+		try {
+			WalletDataTransferObject existProduct = service.get_wallet(id);
+
+			service.save_wallet(walletDTO);
+			return new ResponseEntity<>(HttpStatus.ACCEPTED);
+		}
+		catch (NoSuchElementException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		catch (NumberFormatException e) {
+			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@DeleteMapping("/wallet/{id}")
+	public void delete(@PathVariable String id) {
+		service.delete(id);
+	}
+
+	@GetMapping("/wallet/{id}")
+	public ResponseEntity<WalletDataTransferObject> get(@PathVariable String id) {
+		try {
+			WalletDataTransferObject user = service.get_wallet(id);
+
+			return new ResponseEntity<WalletDataTransferObject>(user, HttpStatus.OK);
+		} catch (NoSuchElementException e) {
+			return new ResponseEntity<WalletDataTransferObject>(HttpStatus.NOT_FOUND);
+		}
+	}
+
 
 
 }

@@ -10,8 +10,10 @@ import java.util.List;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction_summary, String> {
 
-    @Query(value = "select * from transaction_summary where transaction_summary.trans_id=:tranx_id", nativeQuery = true)
-    public List<Transaction_summary> getBytranxid(String tranx_id);
+    @Query(value = "select * from transaction_summary where transaction_summary.tranx_id=:tranx_id", nativeQuery = true)
+    public Transaction_summary getListBytranxid(String tranx_id);
+
+
 
 
 
