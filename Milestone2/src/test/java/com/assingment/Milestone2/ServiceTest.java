@@ -99,9 +99,11 @@ public class ServiceTest {
 
         // Way1 by DTO
         TransactionSummaryDataTransferObject txn_dto =service.convertEntityToDto_transaction(txn_entity);
+        List<TransactionSummaryDataTransferObject> txn_dtoList=new ArrayList<>();
+        txn_dtoList.add(txn_dto);
 
         Mockito.when(txnRepo.getListBytranxid(txn_entity.getTranx_id())).thenReturn(service.convertDtoToEntity_transaction(txn_dto));
-        assertEquals(txn_dto,service.get_currentTransaction("001"));
+        assertEquals(txn_dtoList,service.get_currentTransaction("001"));
 
         /*
         //Way2 by Enitity

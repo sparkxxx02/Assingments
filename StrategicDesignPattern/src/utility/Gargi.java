@@ -7,6 +7,5 @@ public class Gargi implements Student {
     public void apply() {
         //someMethod("someParameter");
         System.out.println("hello from Gargi");
-
     }
 }

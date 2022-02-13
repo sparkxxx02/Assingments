@@ -46,7 +46,6 @@ class ControllerTests {
     @Autowired
     private ObjectMapper objectMapper;
 
-
     @Test
     void login() throws Exception {
         /* Login with a user already created. */
