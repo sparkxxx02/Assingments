@@ -5,16 +5,16 @@ public class DriverClass {
 
     private static final StrategyConditionClass strategyConditionclass = new StrategyConditionClass();
 
-    public static void decide(String someCondition) {
+    public static String decide(String someCondition) {
         try{
             Student student = strategyConditionclass.getStrategy(someCondition)
                     .orElseThrow(IllegalArgumentException::new);
-            student.apply();
+            return student.apply();
 
         }catch (IllegalArgumentException e)
         {
-            System.out.println("Enter correct condition for "+someCondition);
             e.printStackTrace();
+            return ("Enter correct condition for "+someCondition);
         }
 
     }

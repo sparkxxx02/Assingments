@@ -4,9 +4,9 @@ import utility.interfaces.Student;
 
 public class Nirala implements Student {
     @Override
-    public void apply() {
+    public String apply() {
         //someMethod("someParameter");
-        System.out.println("hello from Nirala");
+        return ("hello from Nirala");
 
     }
 }

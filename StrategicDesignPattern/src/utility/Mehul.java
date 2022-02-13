@@ -4,8 +4,8 @@ import utility.interfaces.Student;
 
 public class Mehul implements Student {
     @Override
-    public void apply() {
+    public String apply() {
         //someMethod("someParameter");
-        System.out.println("hello from utility.Mehul");
+        return ("hello from utility.Mehul");
     }
 }

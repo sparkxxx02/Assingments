@@ -4,9 +4,9 @@ import utility.interfaces.Student;
 
 public class Satvik implements Student {
     @Override
-    public void apply() {
+    public String apply() {
         //someMethod("someParameter");
-        System.out.println("hello from Satvik");
+        return ("hello from Satvik");
 
     }
 }
