@@ -1,8 +1,11 @@
 package com.assingment.Milestone2.service;
 
+import com.assingment.Milestone2.controller.Controller;
 import com.assingment.Milestone2.dao.*;
 import com.assingment.Milestone2.dto.*;
 import com.assingment.Milestone2.model.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -36,6 +39,9 @@ public class WalletService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    Logger logger = LogManager.getLogger(WalletService.class);
+
+
 
 
     @Autowired
@@ -68,18 +74,17 @@ public class WalletService implements UserDetailsService {
     }
 
     public List<WalletDataTransferObject> listAll_wallet() {
+        logger.info("Service Layer-- getting all list of wallets");
         return wallet_repo.findAll()
                 .stream()
                 .map(this::convertEntityToDto_wallet)
                 .collect(Collectors.toList());
     }
     public List<TransactionSummaryDataTransferObject> get_currentTransaction(String tranx_id) {
-        /*System.out.println("obtaining tranx_id"+tranx_id);
-        System.out.println("fetching tranx_id"+trans_repo.getListBytranxid(tranx_id));
+
+        logger.info("Service Layer-- getting current transaction summary");
 
 
-        return  convertEntityToDto_transaction(trans_repo.getListBytranxid(tranx_id));
-*/
         List<Transaction_summary> transaction_summaries=new ArrayList<>();
 
            transaction_summaries.add(trans_repo.getListBytranxid(tranx_id));
@@ -92,6 +97,9 @@ public class WalletService implements UserDetailsService {
 
 
     public List<List<?>> get_All_transactions(String mobilenumber) {
+        logger.info("Service Layer-- getting all transactions for given phone Number");
+
+
         List<Senders> sendersList=  sendersRepository.getByUserPhonenumber(mobilenumber);
         List<Receivers> receiversList= receiversRepository.getByUserPhonenumber(mobilenumber);
 
@@ -103,11 +111,15 @@ public class WalletService implements UserDetailsService {
 
 
     public Wallet save_wallet(WalletDataTransferObject walletdto) {
+        logger.info("Service Layer-- saving wallet");
+
 
         return wallet_repo.save(convertDtoToEntity_wallet(walletdto));
     }
 
     public Wallet save_wallet2(Wallet wallet) {
+        logger.info("Service Layer-- saving wallet");
+
 
         return wallet_repo.save(wallet);
     }
@@ -116,12 +128,17 @@ public class WalletService implements UserDetailsService {
 
     //Function for finding the wallet by id
     public WalletDataTransferObject get_wallet(String mobilenumber) {
+
+        logger.info("Service Layer-- getting current wallet");
+
         Wallet temp= wallet_repo.findByMobilenumber(mobilenumber);
         return convertEntityToDto_wallet(temp);
     }
 
 
     public Transaction_summary save_transaction(TransactionSummaryDataTransferObject transactionSummaryDataTransferObject) {
+        logger.info("Service Layer-- saving transaction");
+
         return trans_repo.save(convertDtoToEntity_transaction(transactionSummaryDataTransferObject));
     }
 
@@ -140,11 +157,15 @@ public class WalletService implements UserDetailsService {
     }
 
     public boolean checkforDuplicateEntry(WalletDataTransferObject walletDTO){
+        logger.info("Service Layer-- checking for duplicate entry initiated");
+
         Wallet wallet= wallet_repo.findByMobilenumber(walletDTO.getMobilenumber());
         return wallet != null;
 
     }
     public boolean checkForSufficientAmount(String payer_mobile_number,String amount){
+        logger.info("Service Layer-- checking for sufficient funds initiated");
+
         System.out.println("checking="+wallet_repo.getByAmount(payer_mobile_number));
         return (Integer.parseInt(amount) > Integer.parseInt(wallet_repo.getByAmount(payer_mobile_number)));
        // return true;
@@ -172,6 +193,8 @@ public class WalletService implements UserDetailsService {
 
 
     public void SaveToSender(String payer, String payee, String amount,long T_D) {
+        logger.info("Service Layer-- saving to sender initiated");
+
         SendersDataTransferObject sendersDTO=new SendersDataTransferObject();
         sendersDTO.setAmount_sent(amount);
         String timestamp = String.valueOf(Instant.ofEpochMilli(T_D)
@@ -181,9 +204,13 @@ public class WalletService implements UserDetailsService {
         sendersDTO.setUser_phonenumber(payer);
         sendersDTO.setSent_to(payee);
         sendersDTO.setTransaction_id(String.valueOf(T_D));
+        logger.debug("saved to sender"+sendersDTO);
+
         SavingToDbSender(sendersDTO);
     }
     public void SaveToReceiver(String payer, String payee, String amount,long T_D) {
+        logger.info("Service Layer-- saving to receiver initiated");
+
         ReceiversDataTransferObject receiversDTO=new ReceiversDataTransferObject();
         receiversDTO.setAmount_received(amount);
         String timestamp = String.valueOf(Instant.ofEpochMilli(T_D)
@@ -193,10 +220,14 @@ public class WalletService implements UserDetailsService {
         receiversDTO.setUser_phonenumber(payee);
         receiversDTO.setReceived_from(payer);
         receiversDTO.setTransaction_id(String.valueOf(T_D));
+        logger.debug("saved to receiver "+receiversDTO);
+
         SavingToDbReceivers(receiversDTO);
     }
     public void deductAmount(String mobilenumber,String amount)
     {
+        logger.info("Service Layer-- deducting amount initiated");
+
         WalletDataTransferObject walletDTO= get_wallet(mobilenumber);
         walletDTO.setAmount(String.valueOf(Integer.parseInt(walletDTO.getAmount()) - Integer.parseInt(amount)));
         save_wallet(walletDTO);
@@ -204,11 +235,15 @@ public class WalletService implements UserDetailsService {
     }
     public void addAmount(String mobilenumber,String amount)
     {
+        logger.info("Service Layer-- adding amount inistited");
+
         WalletDataTransferObject walletDTO= get_wallet(mobilenumber);
         walletDTO.setAmount(String.valueOf(Integer.parseInt(walletDTO.getAmount()) + Integer.parseInt(amount)));
         save_wallet(walletDTO);
     }
     public void saveToTransactionSummary(String payer, String payee, String amount, long T_D) {
+        logger.info("Service Layer-- saving transaction initiated");
+
         TransactionSummaryDataTransferObject transactionSummaryDTO =new TransactionSummaryDataTransferObject();
         transactionSummaryDTO.setAmount(amount);
         transactionSummaryDTO.setPayment_from_mobilenumber(payer);

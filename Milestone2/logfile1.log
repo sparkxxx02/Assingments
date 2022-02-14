@@ -1,0 +1,67 @@
+2022-02-14 23:11:20.710  INFO 17360 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2022-02-14 23:11:20.805  INFO 17360 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 78 ms. Found 5 JPA repository interfaces.
+2022-02-14 23:11:21.519  INFO 17360 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8888 (http)
+2022-02-14 23:11:21.530  INFO 17360 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2022-02-14 23:11:21.530  INFO 17360 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.56]
+2022-02-14 23:11:21.642  INFO 17360 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2022-02-14 23:11:21.642  INFO 17360 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1672 ms
+2022-02-14 23:11:21.967  INFO 17360 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2022-02-14 23:11:22.032  INFO 17360 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.6.3.Final
+2022-02-14 23:11:22.247  INFO 17360 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2022-02-14 23:11:22.357  INFO 17360 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2022-02-14 23:11:22.797  INFO 17360 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2022-02-14 23:11:22.837  INFO 17360 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2022-02-14 23:11:24.077  INFO 17360 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-02-14 23:11:24.096  INFO 17360 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2022-02-14 23:11:24.748  WARN 17360 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2022-02-14 23:11:24.899  INFO 17360 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@49322d04, org.springframework.security.web.context.SecurityContextPersistenceFilter@7cc3a7f7, org.springframework.security.web.header.HeaderWriterFilter@9ae0794, org.springframework.security.web.authentication.logout.LogoutFilter@55e88bc, com.assingment.Milestone2.filter.JwtFilter@642ec6, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@c31419f, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@59d29065, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@b6b746b, org.springframework.security.web.session.SessionManagementFilter@15a0f9, org.springframework.security.web.access.ExceptionTranslationFilter@446981a4, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@59d09ff3]
+2022-02-14 23:11:25.508  INFO 17360 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8888 (http) with context path ''
+2022-02-14 23:11:32.927  INFO 17360 --- [http-nio-8888-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2022-02-14 23:11:32.927  INFO 17360 --- [http-nio-8888-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2022-02-14 23:11:32.931  INFO 17360 --- [http-nio-8888-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2022-02-14 23:11:57.813  INFO 17360 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : mygroup: Consumer stopped
+2022-02-14 23:11:57.813  INFO 17360 --- [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : mygroup: Consumer stopped
+2022-02-14 23:11:57.817  INFO 17360 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2022-02-14 23:11:57.817  INFO 17360 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2022-02-14 23:11:57.827  INFO 17360 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2022-02-14 23:12:03.158  INFO 16916 --- [main] c.a.Milestone2.Milestone2Application     : Starting Milestone2Application using Java 17 on DESKTOP-PL0L8MN with PID 16916 (E:\Project\git\new\Assingments\Milestone2\target\classes started by HP in E:\Project\git\new\Assingments\Milestone2)
+2022-02-14 23:12:03.158 DEBUG 16916 --- [main] c.a.Milestone2.Milestone2Application     : Running with Spring Boot v2.6.2, Spring v5.3.14
+2022-02-14 23:12:03.158  INFO 16916 --- [main] c.a.Milestone2.Milestone2Application     : No active profile set, falling back to default profiles: default
+2022-02-14 23:12:03.917  INFO 16916 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2022-02-14 23:12:03.979  INFO 16916 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 58 ms. Found 5 JPA repository interfaces.
+2022-02-14 23:12:04.728  INFO 16916 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8888 (http)
+2022-02-14 23:12:04.736  INFO 16916 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2022-02-14 23:12:04.736  INFO 16916 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.56]
+2022-02-14 23:12:04.893  INFO 16916 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2022-02-14 23:12:04.893  INFO 16916 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1678 ms
+2022-02-14 23:12:05.097  INFO 16916 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2022-02-14 23:12:05.154  INFO 16916 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.6.3.Final
+2022-02-14 23:12:05.307  INFO 16916 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2022-02-14 23:12:05.387  INFO 16916 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2022-02-14 23:12:05.720  INFO 16916 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2022-02-14 23:12:05.747  INFO 16916 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2022-02-14 23:12:07.263  INFO 16916 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-02-14 23:12:07.277  INFO 16916 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2022-02-14 23:12:07.807 DEBUG 16916 --- [main] c.a.Milestone2.filter.JwtFilter          : Filter 'jwtFilter' configured for use
+2022-02-14 23:12:07.902  WARN 16916 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2022-02-14 23:12:08.048  INFO 16916 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@3dc7c5fd, org.springframework.security.web.context.SecurityContextPersistenceFilter@42a7e7e1, org.springframework.security.web.header.HeaderWriterFilter@59bbf82e, org.springframework.security.web.authentication.logout.LogoutFilter@33f4844b, com.assingment.Milestone2.filter.JwtFilter@6b576ff8, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@554e9509, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4bcf08ae, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@62871522, org.springframework.security.web.session.SessionManagementFilter@4c12f54a, org.springframework.security.web.access.ExceptionTranslationFilter@3911fec8, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@31f5ffb9]
+2022-02-14 23:12:08.627  INFO 16916 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8888 (http) with context path ''
+2022-02-14 23:12:08.637  INFO 16916 --- [main] c.a.Milestone2.Milestone2Application     : Started Milestone2Application in 5.939 seconds (JVM running for 6.407)
+2022-02-14 23:12:13.328  INFO 16916 --- [http-nio-8888-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2022-02-14 23:12:13.330  INFO 16916 --- [http-nio-8888-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2022-02-14 23:12:13.330  INFO 16916 --- [http-nio-8888-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2022-02-14 23:12:13.600  INFO 16916 --- [http-nio-8888-exec-2] c.a.Milestone2.controller.Controller     : Creation wallet initiated
+2022-02-14 23:12:13.600 DEBUG 16916 --- [http-nio-8888-exec-2] c.a.Milestone2.controller.Controller     : checking for valid entry
+2022-02-14 23:12:13.600 DEBUG 16916 --- [http-nio-8888-exec-2] c.a.Milestone2.controller.Controller     : Checking for duplicate entry
+2022-02-14 23:12:13.737 DEBUG 16916 --- [http-nio-8888-exec-2] c.a.Milestone2.controller.Controller     : Creating wallet
+2022-02-14 23:12:13.817 DEBUG 16916 --- [http-nio-8888-exec-2] c.a.Milestone2.controller.Controller     : Completed
+2022-02-14 23:12:23.191  INFO 16916 --- [http-nio-8888-exec-3] c.a.Milestone2.controller.Controller     : Authentication initiated
+2022-02-14 23:12:23.191 DEBUG 16916 --- [http-nio-8888-exec-3] c.a.Milestone2.controller.Controller     : authenticating...
+2022-02-14 23:12:23.199 DEBUG 16916 --- [http-nio-8888-exec-3] c.a.Milestone2.controller.Controller     : loading user...
+2022-02-14 23:12:23.199 DEBUG 16916 --- [http-nio-8888-exec-3] c.a.Milestone2.controller.Controller     : generating token
+2022-02-14 23:12:23.217 DEBUG 16916 --- [http-nio-8888-exec-3] c.a.Milestone2.controller.Controller     : Completed
+2022-02-14 23:12:31.206  INFO 16916 --- [org.springframework.kafka.KafkaListenerEndpointContainer#1-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : mygroup: Consumer stopped
+2022-02-14 23:12:31.206  INFO 16916 --- [org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1] o.s.k.l.KafkaMessageListenerContainer    : mygroup: Consumer stopped
+2022-02-14 23:12:31.212  INFO 16916 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2022-02-14 23:12:31.219  INFO 16916 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2022-02-14 23:12:31.219  INFO 16916 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
