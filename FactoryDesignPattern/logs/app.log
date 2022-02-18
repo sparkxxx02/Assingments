@@ -1,0 +1,3 @@
+18-02-2022 12:36:33.603 [main] INFO  factorydesign.Driver.main - Generating FactoryDesignPattern
+18-02-2022 12:36:33.608 [main] DEBUG factorydesign.Driver.main - Wheel: 4
+18-02-2022 12:36:33.609 [main] DEBUG factorydesign.Driver.main - Wheel: 2
