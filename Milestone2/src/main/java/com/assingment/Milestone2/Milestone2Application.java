@@ -1,5 +1,6 @@
 package com.assingment.Milestone2;
 
+import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,6 +21,9 @@ public class Milestone2Application {
 	}
 
 	public static void main(String[] args) {
+
+		Logger logger = org.apache.logging.log4j.LogManager.getLogger(Milestone2Application.class);
+		logger.info("Application started");
 		SpringApplication.run(Milestone2Application.class, args);
 	}
 	@Bean
